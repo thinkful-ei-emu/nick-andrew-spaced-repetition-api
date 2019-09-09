@@ -57,11 +57,12 @@ const UserService = {
         .select('last_value')
         .first();
 
+        
       const languageWords = [
         ['jahr', 'year', 2],
         ['lachen', 'laugh', 3],
         ['klein', 'small', 4],
-        ['schweirig', 'difficult', 5],
+        ['schwierig', 'difficult', 5],
         ['hallo', 'hello', 6],
         ['danke', 'thank you', 7],
         ['wasser', 'water', 8],

@@ -171,18 +171,28 @@ describe('User Endpoints', function () {
           password: '11AAaa!!',
           name: 'test name',
         }
+        // const languageWords = [
+        //   ['jahr', 'year', 2],
+        //   ['lachen', 'laugh', 3],
+        //   ['klein', 'small', 4],
+        //   ['schwierig', 'difficult', 5],
+        //   ['hallo', 'hello', 6],
+        //   ['danke', 'thank you', 7],
+        //   ['wasser', 'water', 8],
+        //   ['kopf', 'head', null],
+        // ]
         const expectedList = {
-          name: 'French',
+          name: 'German',
           total_score: 0,
           words: [
-            { original: 'entraine toi', translation: 'practice' },
-            { original: 'bonjour', translation: 'hello' },
-            { original: 'maison', translation: 'house' },
-            { original: 'développeur', translation: 'developer' },
-            { original: 'traduire', translation: 'translate' },
-            { original: 'incroyable', translation: 'amazing' },
-            { original: 'chien', translation: 'dog' },
-            { original: 'chat', translation: 'cat' },
+            { original: 'jahr', translation: 'year' },
+            { original: 'lachen', translation: 'laugh' },
+            { original: 'klein', translation: 'small' },
+            { original: 'schwierig', translation: 'difficult' },
+            { original: 'hallo', translation: 'hello' },
+            { original: 'danke', translation: 'thank you' },
+            { original: 'wasser', translation: 'water' },
+            { original: 'kopf', translation: 'head' },
           ]
         }
         return supertest(app)
