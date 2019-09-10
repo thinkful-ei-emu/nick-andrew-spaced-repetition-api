@@ -78,8 +78,12 @@ languageRouter
 
 languageRouter
   .post('/guess', async (req, res, next) => {
-    // implement me
-    res.send('implement me!');
+    try{
+      res.send('implement me!');
+    }
+    catch (e) {
+      next(e);
+    }
   });
 
 module.exports = languageRouter;
