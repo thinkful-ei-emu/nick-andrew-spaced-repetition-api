@@ -52,25 +52,28 @@ languageRouter
 
 languageRouter
   .get('/head', async (req, res, next) => {
-    const words = await LanguageService.getLanguageWords(
-      req.app.get('db'),
-      req.language.id
-    );
+    try {
+      const words = await LanguageService.getLanguageWords(
+        req.app.get('db'),
+        req.language.id
+      );
 
-    if (!words || !words.length) {
-      return res.status(400).json({ error: 'No words were found' });
+      if (!words || !words.length) {
+        return res.status(400).json({ error: 'No words were found' });
+      }
+
+      const head = {
+        nextWord: words[0].original,
+        totalScore: req.language.total_score,
+        wordCorrectCount: words[0].correct_count,
+        wordIncorrectCount: words[0].incorrect_count
+      };
+
+      res.json(head);
     }
-
-    const head = {
-      nextWord: words[0].original,
-      totalScore: req.language.total_score,
-      wordCorrectCount: words[0].correct_count,
-      wordIncorrectCount: words[0].incorrect_count
-    };
-
-    console.log(head);
-
-    res.send(head);
+    catch (e) {
+      next(e);
+    }
   });
 
 languageRouter

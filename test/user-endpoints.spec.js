@@ -171,16 +171,6 @@ describe('User Endpoints', function () {
           password: '11AAaa!!',
           name: 'test name',
         };
-        // const languageWords = [
-        //   ['jahr', 'year', 2],
-        //   ['lachen', 'laugh', 3],
-        //   ['klein', 'small', 4],
-        //   ['schwierig', 'difficult', 5],
-        //   ['hallo', 'hello', 6],
-        //   ['danke', 'thank you', 7],
-        //   ['wasser', 'water', 8],
-        //   ['kopf', 'head', null],
-        // ]
         const expectedList = {
           name: 'German',
           total_score: 0,
