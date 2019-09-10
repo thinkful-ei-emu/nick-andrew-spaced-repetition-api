@@ -57,7 +57,6 @@ const UserService = {
         .select('last_value')
         .first();
 
-        
       const languageWords = [
         ['jahr', 'year', 2],
         ['lachen', 'laugh', 3],
