@@ -28,7 +28,22 @@ const LanguageService = {
       )
       .where({ language_id });
   },
-
+  updateLanguageWord(db, updatedWord) {
+    return db.transaction(async trx => {
+      await trx('word')
+        .where('id', updatedWord.id)
+        .update({
+          ...updatedWord
+        });
+    });
+  },
+  setUsersLanguageHead(db, user_id, word_id) {
+    return db.transaction(async trx => {
+      await trx('language')
+        .where({ user_id })
+        .update({ head: word_id });
+    });
+  }
 };
 
 module.exports = LanguageService;

@@ -1,8 +1,13 @@
 const express = require('express');
 const LanguageService = require('./language-service');
 const { requireAuth } = require('../middleware/jwt-auth');
+const SpacedRepetition = require('../utils/spaced-repetition');
 
 const languageRouter = express.Router();
+
+const missingGuessError = {
+  error: 'Missing \'guess\' in request body',
+};
 
 languageRouter
   .use(requireAuth)
@@ -62,11 +67,13 @@ languageRouter
         return res.status(400).json({ error: 'No words were found' });
       }
 
+      const headWord = words.find(word => word.id === req.language.head);
+
       const head = {
-        nextWord: words[0].original,
+        nextWord: headWord.original,
         totalScore: req.language.total_score,
-        wordCorrectCount: words[0].correct_count,
-        wordIncorrectCount: words[0].incorrect_count
+        wordCorrectCount: headWord.correct_count,
+        wordIncorrectCount: headWord.incorrect_count
       };
 
       res.json(head);
@@ -77,9 +84,49 @@ languageRouter
   });
 
 languageRouter
+  .use(express.json())
   .post('/guess', async (req, res, next) => {
-    try{
-      res.send('implement me!');
+    const db = req.app.get('db');
+    try {
+      const { guess, isCorrect } = req.body;
+      if (!guess) return res.status(400).json(missingGuessError);
+
+      const words = await LanguageService.getLanguageWords(
+        db,
+        req.language.id
+      );
+
+      const spacedRepetition = new SpacedRepetition(words, req.language.head);
+
+      let { newHead, prevWord, newWord } = spacedRepetition.guess(isCorrect);
+
+      const updatePrevWord = LanguageService.updateLanguageWord(
+        db,
+        prevWord
+      );
+      const updateNewWord = LanguageService.updateLanguageWord(
+        db,
+        newWord
+      );
+      const updateLanguageHead = LanguageService.setUsersLanguageHead(
+        db,
+        req.user.id,
+        newHead
+      );
+      await Promise.all([
+        updatePrevWord,
+        updateNewWord,
+        updateLanguageHead
+      ]);
+
+      res.json({
+        nextWord: spacedRepetition.peek().original,
+        totalScore: spacedRepetition.totalScore(),
+        wordCorrectCount: newWord.correct_count,
+        wordIncorrectCount: newWord.incorrect_count,
+        answer: newWord.translation,
+        isCorrect
+      });
     }
     catch (e) {
       next(e);
