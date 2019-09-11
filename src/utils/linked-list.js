@@ -70,7 +70,6 @@ class LinkedList {
       }
     }
     
-    // console.log(currNode.value);
     currNode.next = new _Node(value, currNode.next);
   }
 

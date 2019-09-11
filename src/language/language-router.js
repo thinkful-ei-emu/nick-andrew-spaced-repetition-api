@@ -88,7 +88,7 @@ languageRouter
   .post('/guess', async (req, res, next) => {
     const db = req.app.get('db');
     try {
-      const { guess, isCorrect } = req.body;
+      const { guess } = req.body;
       if (!guess) return res.status(400).json(missingGuessError);
 
       const words = await LanguageService.getLanguageWords(
@@ -97,6 +97,7 @@ languageRouter
       );
 
       const spacedRepetition = new SpacedRepetition(words, req.language.head);
+      const isCorrect = guess === spacedRepetition.peek().translation;
 
       let { newHead, prevWord, newWord } = spacedRepetition.guess(isCorrect);
 
@@ -119,11 +120,13 @@ languageRouter
         updateLanguageHead
       ]);
 
+      const nextWord = spacedRepetition.peek();
+
       res.json({
-        nextWord: spacedRepetition.peek().original,
+        nextWord: nextWord.original,
         totalScore: spacedRepetition.totalScore(),
-        wordCorrectCount: newWord.correct_count,
-        wordIncorrectCount: newWord.incorrect_count,
+        wordCorrectCount: nextWord.correct_count,
+        wordIncorrectCount: nextWord.incorrect_count,
         answer: newWord.translation,
         isCorrect
       });

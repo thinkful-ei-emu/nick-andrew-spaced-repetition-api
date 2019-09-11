@@ -5,13 +5,18 @@ class SpacedRepetition {
     this.words = new LinkedList();
 
     this.orderedInsert(words, headWordId);
-    // this.buildList(words);
   }
 
+  /**
+   * return the head word
+   */
   peek() {
     return this.words.head.value;
   }
 
+  /**
+   * return sum of correct_counts of all words in the linked list
+   */
   totalScore() {
     let currNode = this.words.head;
     let totalScore = 0;
@@ -22,13 +27,22 @@ class SpacedRepetition {
     return totalScore;
   }
 
-  buildList(words) {
-    for (let word of words) {
-      console.log('building list', word.original);
-      this.weightedInsert(word, word.memory_value);
-    }
-  }
+  // buildList(words) {
+  //   for (let word of words) {
+  //     console.log('building list', word.original);
+  //     this.weightedInsert(word, word.memory_value);
+  //   }
+  // }
 
+  /**
+   * Insert words from the given array based on headWordId
+   * and subsequent next id's for each word until null is reached
+   * 
+   * could probably be optimized
+   * 
+   * @param {array} wordsArray 
+   * @param {number} headWordId 
+   */
   orderedInsert(wordsArray, headWordId) {
     const headWord = wordsArray.find(word => word.id === headWordId);
     this.words.insert(headWord);
@@ -41,17 +55,25 @@ class SpacedRepetition {
     }
   }
 
+  /**
+   * Inserts word object into words linked list at 
+   * weight-determined index
+   * 
+   * @param {object} word 
+   * @param {number} weight 
+   */
   weightedInsert(word, weight) {
-    let prevNode = this.words.head;
     let currNode = this.words.head;
 
     if (!currNode) this.words.insert(word);
 
-    let i = 0;
-    while (currNode !== null) {
-      // console.log('inserting', word.original);
+    let i = 1;
+    while (currNode !== null && i <= weight) {
+      /**
+       * insert into end of linked list if end of linked list
+       * is reached
+       */
       if (currNode.next === null) {
-        // console.log('end');
         currNode.value.next = word.id;
         word.next = null;
         this.words.insert(word);
@@ -59,33 +81,45 @@ class SpacedRepetition {
           prevWord: currNode.value,
           newWord: word
         };
-        // break;
       }
-      if (weight < currNode.next.value.memory_value) {
-        // console.log('weight');
-        prevNode.value.next = word.id;
+      if (i === weight) {
+        // set current word's next value to new word's id
+        currNode.value.next = word.id;
+
+        // set new word's id to next node's word's id
         word.next = currNode.next.value.id;
         this.words.insertAt(word, i);
         return {
-          prevWord: prevNode.value,
+          prevWord: currNode.value,
           newWord: word
         };
       }
-      // console.log(currNode.value.original);
-      prevNode = currNode;
+
       currNode = currNode.next;
       i++;
     }
   }
 
+  /**
+   * Handles guesses received from the client
+   * 
+   * @param {boolean} result 
+   */
   guess(result) {
     const currWord = this.words.pop();
     const newHead = currWord.next;
-    // const newHead = currWord.value.next;
     if (currWord === null) return null;
     else {
+      /**
+       * increment correct counter if result is correct
+       * increment incorrect counter if result is incorrect
+       * 
+       * double memory_value (weight) if result is correct
+       * set memory_value (weight) to 1 if result is incorrect
+       */
       result ? currWord.correct_count++ : currWord.incorrect_count++;
       currWord.memory_value = result ? currWord.memory_value * 2 : 1;
+
       return {
         newHead,
         ...this.weightedInsert(currWord, currWord.memory_value)
