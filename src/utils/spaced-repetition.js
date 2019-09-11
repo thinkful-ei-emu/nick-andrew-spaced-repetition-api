@@ -27,21 +27,14 @@ class SpacedRepetition {
     return totalScore;
   }
 
-  // buildList(words) {
-  //   for (let word of words) {
-  //     console.log('building list', word.original);
-  //     this.weightedInsert(word, word.memory_value);
-  //   }
-  // }
-
   /**
    * Insert words from the given array based on headWordId
    * and subsequent next id's for each word until null is reached
    * 
    * could probably be optimized
    * 
-   * @param {array} wordsArray 
-   * @param {number} headWordId 
+   * @param {array} wordsArray
+   * @param {number} headWordId
    */
   orderedInsert(wordsArray, headWordId) {
     const headWord = wordsArray.find(word => word.id === headWordId);
