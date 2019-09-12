@@ -100,6 +100,7 @@ languageRouter
       const isCorrect = guess === spacedRepetition.peek().translation;
 
       let { newHead, prevWord, newWord } = spacedRepetition.guess(isCorrect);
+      const newScore = spacedRepetition.totalScore();
 
       const updatePrevWord = LanguageService.updateLanguageWord(
         db,
@@ -112,7 +113,8 @@ languageRouter
       const updateLanguageHead = LanguageService.setUsersLanguageHead(
         db,
         req.user.id,
-        newHead
+        newHead,
+        newScore
       );
       await Promise.all([
         updatePrevWord,
@@ -124,7 +126,7 @@ languageRouter
 
       res.json({
         nextWord: nextWord.original,
-        totalScore: spacedRepetition.totalScore(),
+        totalScore: newScore,
         wordCorrectCount: nextWord.correct_count,
         wordIncorrectCount: nextWord.incorrect_count,
         answer: newWord.translation,

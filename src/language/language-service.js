@@ -37,11 +37,14 @@ const LanguageService = {
         });
     });
   },
-  setUsersLanguageHead(db, user_id, word_id) {
+  setUsersLanguageHead(db, user_id, head, total_score) {
     return db.transaction(async trx => {
       await trx('language')
         .where({ user_id })
-        .update({ head: word_id });
+        .update({
+          head,
+          total_score
+        });
     });
   }
 };
