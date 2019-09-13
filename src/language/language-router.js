@@ -76,7 +76,7 @@ languageRouter
         wordCorrectCount: headWord.correct_count,
         wordIncorrectCount: headWord.incorrect_count
       };
-
+      // test
       res.json(head);
     }
     catch (e) {
