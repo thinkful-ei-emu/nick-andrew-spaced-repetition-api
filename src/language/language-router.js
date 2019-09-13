@@ -71,7 +71,7 @@ languageRouter
 
       const head = {
         nextWord: headWord.original,
-        translation: headWord.translation,
+        // translation: headWord.translation,
         totalScore: req.language.total_score,
         wordCorrectCount: headWord.correct_count,
         wordIncorrectCount: headWord.incorrect_count
